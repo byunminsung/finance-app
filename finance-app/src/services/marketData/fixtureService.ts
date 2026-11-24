@@ -1,4 +1,3 @@
-import { findCompany } from '../../config/companies';
 import { WINDOW_SPAN_MS } from '../../lib/timeWindows';
 import { isValidSymbol } from '../../lib/symbols';
 import type {
@@ -22,6 +21,13 @@ const BASE_PRICES: Readonly<Record<string, number>> = {
   ORCL: 220,
   SAP: 260,
   CRM: 270,
+  // Additional lookup symbols (see config/catalog.ts).
+  AAPL: 230,
+  GOOGL: 190,
+  AMZN: 220,
+  NVDA: 140,
+  INTC: 24,
+  CSCO: 70,
 };
 
 const STEP_MS: Record<TimeWindow, number> = {
@@ -104,7 +110,7 @@ export function createFixtureMarketService(options: FixtureOptions = {}): Market
 
   function lookup(symbol: string): SymbolResult<never> | null {
     if (!isValidSymbol(symbol)) return { symbol, ok: false, error: 'INVALID_SYMBOL' };
-    if (!(symbol in BASE_PRICES) || !findCompany(symbol)) return { symbol, ok: false, error: 'NOT_FOUND' };
+    if (!Object.hasOwn(BASE_PRICES, symbol)) return { symbol, ok: false, error: 'NOT_FOUND' };
     return null;
   }
 

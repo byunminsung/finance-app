@@ -5,6 +5,7 @@ import { useQuotes } from '../../hooks/useMarketData';
 import { useTimeWindow } from '../../hooks/useTimeWindow';
 import { describeError } from '../../lib/errors';
 import { useMarketService } from '../../services/marketData/MarketServiceContext';
+import { SelectedCompanyPanel } from './SelectedCompanyPanel';
 import { SummaryCards } from './SummaryCards';
 import { WindowTabs } from './WindowTabs';
 import { WindowView } from './WindowView';
@@ -32,6 +33,8 @@ export function DashboardPage() {
       </ChartCard>
 
       <WindowView key={window} window={window} />
+
+      <SelectedCompanyPanel window={window} />
 
       <footer className="dashboard__footer">For demonstration only. Not investment advice.</footer>
     </main>

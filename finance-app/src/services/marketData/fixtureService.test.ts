@@ -60,3 +60,24 @@ describe('fixture market service', () => {
     await expect(pending).rejects.toBeDefined();
   });
 });
+
+describe('fixture market service: additional lookup symbols', () => {
+  it('serves catalog symbols that are not tracked companies', async () => {
+    const [nvda] = await service.getHistory(['NVDA'], 'week');
+    expect(nvda.ok).toBe(true);
+  });
+
+  it('keeps data per symbol: a different symbol never returns the same series', async () => {
+    const results = await service.getHistory(['IBM', 'NVDA'], 'quarter');
+    if (!results[0].ok || !results[1].ok) throw new Error('expected success');
+    expect(results[0].data.symbol).toBe('IBM');
+    expect(results[1].data.symbol).toBe('NVDA');
+    expect(results[0].data.points).not.toEqual(results[1].data.points);
+  });
+
+  it('reports unknown symbols as NOT_FOUND', async () => {
+    // Uppercase, so these only fail the lookup if it ignores inherited properties; real prototype names are lowercase.
+    const results = await service.getHistory(['ZZZZ', 'TOSTRING', 'VALUEOF'], 'day');
+    expect(results.every((r) => !r.ok && r.error === 'NOT_FOUND')).toBe(true);
+  });
+});

@@ -9,7 +9,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { findCompany } from '../config/companies';
+import { findListedCompany } from '../config/catalog';
 import { formatDateTime, formatPercent, formatTick } from '../lib/format';
 import type { ChartRow } from '../lib/series';
 import type { TimeWindow } from '../types/market';
@@ -44,7 +44,7 @@ export function ComparisonLineChart({ rows, symbols, window, height = 320 }: Com
           />
           <Legend />
           {symbols.map((symbol) => {
-            const company = findCompany(symbol);
+            const company = findListedCompany(symbol);
             return (
               <Line
                 key={symbol}

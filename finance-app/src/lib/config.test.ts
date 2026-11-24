@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { isValidSymbol } from './symbols';
+import { isValidSymbol, normalizeSymbol } from './symbols';
 import { DEFAULT_WINDOW, parseTimeWindow, WINDOW_SPAN_MS } from './timeWindows';
 
 describe('parseTimeWindow', () => {
@@ -28,5 +28,11 @@ describe('isValidSymbol', () => {
     for (const symbol of ['', 'ibm', 'TOOLONGSYMBOL', 'IBM;DROP', '../etc', 'IBM MSFT', '1IBM']) {
       expect(isValidSymbol(symbol)).toBe(false);
     }
+  });
+});
+
+describe('normalizeSymbol', () => {
+  it('trims and uppercases', () => {
+    expect(normalizeSymbol('  nvda ')).toBe('NVDA');
   });
 });

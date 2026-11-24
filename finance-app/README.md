@@ -25,7 +25,7 @@ npm run build       # typecheck + production build
 
 Success: every command exits 0, and the dashboard shows five companies on all three tabs.
 
-Try `?window=week` or `?window=quarter` in the URL: the selected view is kept in the query string.
+Try `?window=week` or `?window=quarter` in the URL: the selected view is kept in the query string. The lookup panel does the same with `?company=NVDA`.
 
 ## Folder layout
 
@@ -45,6 +45,15 @@ src/
 ├─ features/dashboard/        # DashboardPage, WindowTabs, WindowView, SummaryCards, RankingTable
 └─ test/setup.ts
 ```
+
+## Company lookup
+
+Below the main dashboard, **Look up a company** charts any listed ticker against IBM for the active time window (% change from the start of the period).
+
+- Input is trimmed, uppercased and validated locally; a malformed ticker shows a message and makes no request.
+- A ticker the data source does not know, or one with no price points in the period, shows a **no-data message**. It never falls back to another company's data: results are matched by symbol, not by position.
+- The panel has its own request and error states, so a failure there never affects the IBM-vs-competitors sections.
+- Suggestions come from `config/catalog.ts`; the selection is kept in the URL (`?company=`).
 
 ## Architecture
 
@@ -73,4 +82,4 @@ Vite proxies `/api` to `127.0.0.1:8787`. Responses are validated at runtime; mal
 | New time window | `types/market.ts` (`TimeWindow`), `lib/timeWindows.ts` |
 | New data source (e.g. Yahoo proxy) | implement `MarketDataService` in `services/marketData/`, register in `index.ts` |
 | New chart or view | new component in `components/` or `features/dashboard/`, compose in `WindowView` |
-| User-selected company graph (workshop part 2) | new component under `features/dashboard/` + hook using `useHistory`; validate input with `lib/symbols.ts` |
+| Add a symbol to the lookup box | `src/config/catalog.ts` (and a base price in `fixtureService.ts` while on sample data). Do not add it to `COMPANIES` unless it should appear in the IBM comparison. |
